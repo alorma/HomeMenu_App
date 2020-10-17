@@ -8,9 +8,11 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.setContent
 import androidx.ui.tooling.preview.Preview
+import com.alorma.homemenu.main.MainViewModel
 import com.alorma.homemenu.time.Clock
 import com.alorma.homemenu.ui.HomeMenuTheme
-import org.koin.androidx.compose.get
+import kotlinx.coroutines.runBlocking
+import org.koin.androidx.compose.getViewModel
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,18 +30,19 @@ class MainActivity : AppCompatActivity() {
 
 @Composable
 fun DateText(
-    clock: Clock = get()
+    mainViewModel: MainViewModel = getViewModel(),
 ) {
-    Text(text = "It's: ${clock.now()}")
+    Text(text = "It's: ${runBlocking { mainViewModel.getTime() }}")
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    val clock = object: Clock {
-        override fun now(): Long = 19183818181L
+    val clock = object : Clock {
+        override suspend fun now(): Long = System.currentTimeMillis()
     }
+    val mainViewModel = MainViewModel(clock = clock)
     HomeMenuTheme {
-        DateText(clock)
+        DateText(mainViewModel = mainViewModel)
     }
 }
