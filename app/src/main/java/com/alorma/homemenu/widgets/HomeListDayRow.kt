@@ -16,6 +16,7 @@ import androidx.ui.tooling.preview.Preview
 import com.alorma.homemenu.R
 import com.alorma.homemenu.main.Day
 import com.alorma.homemenu.ui.HomeMenuTheme
+import java.time.LocalDate
 
 @Composable
 fun daysList(
@@ -110,7 +111,7 @@ private fun dayContent() {
 @Composable
 fun dayRowPreview() {
     HomeMenuTheme {
-        val day = Day("Lunes")
+        val day = Day("Lunes", LocalDate.now())
         Column {
             daysList(
                 days = listOf(

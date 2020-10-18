@@ -7,12 +7,11 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,7 +20,7 @@ import com.alorma.homemenu.main.MainViewModel
 import com.alorma.homemenu.time.Clock
 import com.alorma.homemenu.ui.HomeMenuTheme
 import com.alorma.homemenu.widgets.daysList
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDate
 
@@ -39,9 +38,9 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun HomeScreen(mainViewModel: MainViewModel) {
-    val context = ContextAmbient.current
     Scaffold(
         modifier = Modifier.background(
             color = MaterialTheme.colors.background
@@ -52,6 +51,14 @@ fun HomeScreen(mainViewModel: MainViewModel) {
                 title = { Text(text = title) }
             )
         },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { Text("Add") },
+                shape = RoundedCornerShape(percent = 50),
+                onClick = { mainViewModel.onAddNewDay() },
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
         bodyContent = {
             val modifier = Modifier.fillMaxWidth()
                 .padding(8.dp)
@@ -59,7 +66,8 @@ fun HomeScreen(mainViewModel: MainViewModel) {
             ScrollableColumn(
                 modifier = modifier,
             ) {
-                val days = runBlocking { mainViewModel.getDays() }
+                val state = mainViewModel.days.collectAsState()
+                val days = state.value
                 daysList(days = days) { day ->
                     mainViewModel.onDayClicked(day)
                 }

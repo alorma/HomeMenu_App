@@ -1,35 +1,61 @@
 package com.alorma.homemenu.main
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.alorma.homemenu.time.Clock
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.format.TextStyle
-import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.stream.Collectors
-import java.util.stream.Stream
+import kotlin.math.absoluteValue
 
+@ExperimentalCoroutinesApi
 class MainViewModel(private val clock: Clock) : ViewModel() {
 
-    suspend fun getDays(): List<Day> {
-        val today = clock.getToday()
+    private val mutateFlow: MutableStateFlow<List<Day>> = MutableStateFlow(emptyList())
+    val days: StateFlow<List<Day>> = mutateFlow
 
-        val min = today.minusDays(DAYS_TO_SHOW)
-        val max = today.plusDays(DAYS_TO_SHOW)
+    private val daysList = mutableListOf<Day>()
 
-        return Stream.iterate(min, { t -> t.plusDays(1) })
-            .limit(ChronoUnit.DAYS.between(min, max) + 1)
-            .map { date ->
-                val dayOfWeek = date.dayOfWeek
-                val name = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
-                Day(name, date == today)
-            }.collect(Collectors.toList())
+    init {
+        viewModelScope.launch {
+            val today = clock.getToday()
+            val day = Day(getDayName(today), today, true)
+            daysList.add(day)
+            updateState()
+        }
+    }
+
+    private fun updateState() {
+        mutateFlow.value = daysList.toList().sortedBy { it.date }
+    }
+
+    private suspend fun getDayName(date: LocalDate): String {
+        return if (clock.getToday() == date) {
+            "Today"
+        } else {
+            val dayOfWeek = date.dayOfWeek
+            dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
+        }
     }
 
     fun onDayClicked(day: Day) {
 
     }
 
-    companion object {
-        private const val DAYS_TO_SHOW: Long = 3
+    fun onAddNewDay() = viewModelScope.launch {
+        val today = clock.getToday()
+        val random = (-6..6).random().toLong()
+        val date = when {
+            random < 0 -> today.minusDays(random.absoluteValue)
+            random > 0 -> today.plusDays(random.absoluteValue)
+            else -> today
+        }
+        val day = Day(getDayName(date), date, date == today)
+        daysList.add(day)
+        updateState()
     }
 }
