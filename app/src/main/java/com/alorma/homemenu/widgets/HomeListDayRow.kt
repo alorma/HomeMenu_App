@@ -4,7 +4,7 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumnForIndexed
+import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -27,14 +27,12 @@ fun daysList(
     days: List<Day>,
     onDayClick: (Day) -> Unit,
 ) {
-    LazyColumnForIndexed(
+    LazyColumnFor(
         items = days,
         contentPadding = PaddingValues(all = 8.dp),
-    ) { index, item ->
+    ) { item ->
         dayRow(day = item, onDayClick = onDayClick)
-        if (index < days.size - 1) {
-            dayListSpace()
-        }
+        dayListSpace()
     }
 }
 

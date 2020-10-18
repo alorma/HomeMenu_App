@@ -59,8 +59,8 @@ fun HomeScreen(mainViewModel: MainViewModel) {
         },
         floatingActionButtonPosition = FabPosition.End,
         bodyContent = {
-            homeComponent(mainViewModel) {
-                mainViewModel.onAddNewDay()
+            homeComponent(mainViewModel) { day ->
+                mainViewModel.onDayClicked(day = day)
             }
         }
     )
