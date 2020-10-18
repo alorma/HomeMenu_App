@@ -21,6 +21,8 @@ import com.alorma.homemenu.main.DateViewModel
 import com.alorma.homemenu.main.Day
 import com.alorma.homemenu.ui.HomeMenuTheme
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.*
 
 @Composable
 fun daysList(
@@ -144,7 +146,7 @@ fun dayRowPreview() {
         val date = LocalDate.now()
         val dateViewModel = DateViewModel(
             day = date.dayOfMonth.toString(),
-            month = date.month.value.toString(),
+            month = date.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
             year = date.year.toString(),
         )
         val day = Day(

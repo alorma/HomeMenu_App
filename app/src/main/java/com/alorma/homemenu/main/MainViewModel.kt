@@ -32,7 +32,7 @@ open class MainViewModel(private val clock: Clock) : ViewModel() {
         val today = clock.getToday()
         val dateViewModel = DateViewModel(
             day = newDay.dayOfMonth.toString(),
-            month = newDay.month.value.toString(),
+            month = newDay.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
             year = newDay.year.toString(),
         )
 
