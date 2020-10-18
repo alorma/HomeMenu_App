@@ -25,6 +25,10 @@ class MainViewModel(private val clock: Clock) : ViewModel() {
             }.collect(Collectors.toList())
     }
 
+    fun onDayClicked(day: Day) {
+
+    }
+
     companion object {
         private const val DAYS_TO_SHOW: Long = 3
     }

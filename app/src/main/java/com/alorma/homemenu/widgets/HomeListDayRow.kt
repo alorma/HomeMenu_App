@@ -18,22 +18,36 @@ import com.alorma.homemenu.main.Day
 import com.alorma.homemenu.ui.HomeMenuTheme
 
 @Composable
-fun daysList(days: List<Day>) {
+fun daysList(
+    days: List<Day>,
+    onDayClick: (Day) -> Unit,
+) {
     days.forEachIndexed { index, day ->
-        dayRow(day)
-        if (index < days.size - 1) {
-            Spacer(modifier = Modifier.preferredHeight(4.dp))
-            Divider(
-                color = MaterialTheme.colors.onBackground.copy(alpha = 0.08f),
-                modifier = Modifier.padding(start = 8.dp, end= 8.dp)
-            )
-            Spacer(modifier = Modifier.preferredHeight(4.dp))
-        }
+        dayRow(day, onDayClick)
+        dayListSpace(index, days)
     }
 }
 
 @Composable
-fun dayRow(day: Day) {
+private fun dayListSpace(
+    index: Int,
+    days: List<Day>
+) {
+    if (index < days.size - 1) {
+        Spacer(modifier = Modifier.preferredHeight(4.dp))
+        Divider(
+            color = MaterialTheme.colors.onBackground.copy(alpha = 0.08f),
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+        )
+        Spacer(modifier = Modifier.preferredHeight(4.dp))
+    }
+}
+
+@Composable
+fun dayRow(
+    day: Day,
+    onDayClick: (Day) -> Unit
+) {
     val shape = MaterialTheme.shapes.medium
     val backgroundColor = if (day.isToday) {
         MaterialTheme.colors.primary.copy(alpha = 0.08f)
@@ -44,7 +58,7 @@ fun dayRow(day: Day) {
         modifier = Modifier.fillMaxWidth()
             .clip(shape)
             .background(color = backgroundColor)
-            .clickable(onClick = {})
+            .clickable(onClick = { onDayClick(day) })
             .padding(8.dp),
     ) {
         dayTitle(day)
@@ -103,7 +117,7 @@ fun dayRowPreview() {
                 days = listOf(
                     day, day.copy(isToday = true)
                 )
-            )
+            ) { }
         }
     }
 }

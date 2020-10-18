@@ -5,15 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,7 +20,6 @@ import androidx.ui.tooling.preview.Preview
 import com.alorma.homemenu.main.MainViewModel
 import com.alorma.homemenu.time.Clock
 import com.alorma.homemenu.ui.HomeMenuTheme
-import com.alorma.homemenu.widgets.dayRow
 import com.alorma.homemenu.widgets.daysList
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -42,7 +40,8 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun HomeScreen(viewModel: MainViewModel) {
+fun HomeScreen(mainViewModel: MainViewModel) {
+    val context = ContextAmbient.current
     Scaffold(
         modifier = Modifier.background(
             color = MaterialTheme.colors.background
@@ -60,8 +59,10 @@ fun HomeScreen(viewModel: MainViewModel) {
             ScrollableColumn(
                 modifier = modifier,
             ) {
-                val days = runBlocking { viewModel.getDays() }
-                daysList(days = days)
+                val days = runBlocking { mainViewModel.getDays() }
+                daysList(days = days) { day ->
+                    mainViewModel.onDayClicked(day)
+                }
             }
         }
     )
