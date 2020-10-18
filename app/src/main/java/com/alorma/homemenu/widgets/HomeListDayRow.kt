@@ -1,18 +1,16 @@
 package com.alorma.homemenu.widgets
 
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -20,40 +18,43 @@ import com.alorma.homemenu.main.Day
 import com.alorma.homemenu.ui.HomeMenuTheme
 
 @Composable
-fun dayRow(day: Day) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
-    ) {
-        val shape = MaterialTheme.shapes.medium.copy(
-            topLeft = CornerSize(0.dp),
-            topRight = CornerSize(0.dp),
-        )
-        Card(
-            shape = shape,
-            elevation = 4.dp,
-            modifier = Modifier.clip(shape).clickable(onClick = {}),
-        ) {
-            Column {
-                dayTitle(day)
-                dayContent(day)
-            }
+fun daysList(days: List<Day>) {
+    days.forEachIndexed { index, day ->
+        dayRow(day)
+        if (index < days.size - 1) {
+            Spacer(modifier = Modifier.preferredHeight(4.dp))
+            Divider(
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.08f),
+                modifier = Modifier.padding(start = 8.dp, end= 8.dp)
+            )
+            Spacer(modifier = Modifier.preferredHeight(4.dp))
         }
     }
 }
 
 @Composable
-private fun dayTitle(day: Day) {
-    Surface(
-        color = if (isSystemInDarkTheme()) {
-            MaterialTheme.colors.surface
-        } else {
-            MaterialTheme.colors.secondary
-        },
-        elevation = 2.dp,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        dayRowText(day)
+fun dayRow(day: Day) {
+    val shape = MaterialTheme.shapes.medium
+    val backgroundColor = if (day.isToday) {
+        MaterialTheme.colors.primary.copy(alpha = 0.08f)
+    } else {
+        MaterialTheme.colors.background
     }
+    Column(
+        modifier = Modifier.fillMaxWidth()
+            .clip(shape)
+            .background(color = backgroundColor)
+            .clickable(onClick = {})
+            .padding(8.dp),
+    ) {
+        dayTitle(day)
+        dayContent(day)
+    }
+}
+
+@Composable
+private fun dayTitle(day: Day) {
+    dayRowText(day)
 }
 
 @Composable
@@ -61,35 +62,34 @@ private fun dayRowText(
     day: Day,
 ) {
     val emphasis = if (day.isToday) {
-        AmbientEmphasisLevels.current.high
+        FontWeight.Bold
     } else {
-        AmbientEmphasisLevels.current.medium
+        FontWeight.Normal
     }
     val dayName = if (day.isToday) {
         "Today"
     } else {
         day.name
     }
-    Column(
-        horizontalAlignment = Alignment.Start,
-        modifier = Modifier.padding(8.dp)
-    ) {
-        ProvideEmphasis(emphasis = emphasis) {
-            Text(
-                text = dayName,
-                textAlign = TextAlign.Start,
-            )
-        }
-    }
+    Text(
+        text = dayName,
+        textAlign = TextAlign.Start,
+        style = MaterialTheme.typography.subtitle1.copy(
+            fontWeight = emphasis,
+        ),
+        color = MaterialTheme.colors.primary
+    )
 }
 
 @Composable
 private fun dayContent(day: Day) {
     Column(
         horizontalAlignment = Alignment.Start,
-        modifier = Modifier.padding(16.dp)
     ) {
-        Text(text = "Hello")
+        Text(
+            text = "Hello",
+            style = MaterialTheme.typography.body2,
+        )
     }
 }
 
@@ -99,8 +99,11 @@ fun dayRowPreview() {
     HomeMenuTheme {
         val day = Day("Lunes")
         Column {
-            dayRow(day = day)
-            dayRow(day = day.copy(isToday = true))
+            daysList(
+                days = listOf(
+                    day, day.copy(isToday = true)
+                )
+            )
         }
     }
 }
