@@ -4,7 +4,11 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.lazy.LazyColumnForIndexed
+import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideEmphasis
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,25 +27,25 @@ fun daysList(
     days: List<Day>,
     onDayClick: (Day) -> Unit,
 ) {
-    days.forEachIndexed { index, day ->
-        dayRow(day, onDayClick)
-        dayListSpace(index, days)
+    LazyColumnForIndexed(
+        items = days,
+        contentPadding = PaddingValues(all = 8.dp),
+    ) { index, item ->
+        dayRow(day = item, onDayClick = onDayClick)
+        if (index < days.size - 1) {
+            dayListSpace()
+        }
     }
 }
 
 @Composable
-private fun dayListSpace(
-    index: Int,
-    days: List<Day>,
-) {
-    if (index < days.size - 1) {
-        Spacer(modifier = Modifier.preferredHeight(4.dp))
-        Divider(
-            color = MaterialTheme.colors.onBackground.copy(alpha = 0.08f),
-            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
-        )
-        Spacer(modifier = Modifier.preferredHeight(4.dp))
-    }
+private fun dayListSpace() {
+    Spacer(modifier = Modifier.preferredHeight(4.dp))
+    Divider(
+        color = MaterialTheme.colors.onBackground.copy(alpha = 0.08f),
+        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+    )
+    Spacer(modifier = Modifier.preferredHeight(4.dp))
 }
 
 @Composable
@@ -150,12 +154,8 @@ fun dayRowPreview() {
             date = date,
             dateText = dateViewModel
         )
-        Column {
-            daysList(
-                days = listOf(
-                    day, day.copy(isToday = true)
-                )
-            ) { }
-        }
+        val items = listOf(day, day.copy(isToday = true))
+
+        daysList(days = items, onDayClick = {})
     }
 }

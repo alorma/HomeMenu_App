@@ -2,11 +2,9 @@ package com.alorma.homemenu
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -14,11 +12,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import com.alorma.homemenu.main.Day
 import com.alorma.homemenu.main.MainViewModel
 import com.alorma.homemenu.time.Clock
 import com.alorma.homemenu.ui.HomeMenuTheme
+import com.alorma.homemenu.widgets.dayRow
 import com.alorma.homemenu.widgets.daysList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -60,22 +59,24 @@ fun HomeScreen(mainViewModel: MainViewModel) {
         },
         floatingActionButtonPosition = FabPosition.End,
         bodyContent = {
-            val modifier = Modifier.fillMaxWidth()
-                .padding(8.dp)
-
-            ScrollableColumn(
-                modifier = modifier,
-            ) {
-                val state = mainViewModel.days.collectAsState()
-                val days = state.value
-                daysList(days = days) { day ->
-                    mainViewModel.onDayClicked(day)
-                }
+            homeComponent(mainViewModel) {
+                mainViewModel.onAddNewDay()
             }
         }
     )
 }
 
+@ExperimentalCoroutinesApi
+@Composable
+private fun homeComponent(
+    mainViewModel: MainViewModel,
+    onDayClick: (Day) -> Unit,
+) {
+    val items = mainViewModel.days().collectAsState().value
+    daysList(days = items, onDayClick = onDayClick)
+}
+
+@ExperimentalCoroutinesApi
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {

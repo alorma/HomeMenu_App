@@ -13,10 +13,9 @@ import java.util.*
 import kotlin.math.absoluteValue
 
 @ExperimentalCoroutinesApi
-class MainViewModel(private val clock: Clock) : ViewModel() {
+open class MainViewModel(private val clock: Clock) : ViewModel() {
 
     private val mutateFlow: MutableStateFlow<List<Day>> = MutableStateFlow(emptyList())
-    val days: StateFlow<List<Day>> = mutateFlow
 
     private val daysList = mutableListOf<Day>()
 
@@ -26,6 +25,8 @@ class MainViewModel(private val clock: Clock) : ViewModel() {
             onNewDay(today)
         }
     }
+
+    open fun days(): StateFlow<List<Day>> = mutateFlow
 
     private suspend fun onNewDay(newDay: LocalDate) {
         val today = clock.getToday()
