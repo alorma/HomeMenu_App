@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import com.alorma.homemenu.R
 import com.alorma.homemenu.main.Day
 import com.alorma.homemenu.ui.HomeMenuTheme
 
@@ -62,7 +62,7 @@ fun dayRow(
             .padding(8.dp),
     ) {
         dayTitle(day)
-        dayContent(day)
+        dayContent()
     }
 }
 
@@ -75,11 +75,6 @@ private fun dayTitle(day: Day) {
 private fun dayRowText(
     day: Day,
 ) {
-    val emphasis = if (day.isToday) {
-        FontWeight.Bold
-    } else {
-        FontWeight.Normal
-    }
     val dayName = if (day.isToday) {
         "Today"
     } else {
@@ -88,21 +83,25 @@ private fun dayRowText(
     Text(
         text = dayName,
         textAlign = TextAlign.Start,
-        style = MaterialTheme.typography.subtitle1.copy(
-            fontWeight = emphasis,
-        ),
+        style = MaterialTheme.typography.h6,
         color = MaterialTheme.colors.primary
     )
 }
 
 @Composable
-private fun dayContent(day: Day) {
-    Column(
-        horizontalAlignment = Alignment.Start,
-    ) {
+private fun dayContent() {
+    Column {
         Text(
-            text = "Hello",
-            style = MaterialTheme.typography.body2,
+            text = stringResource(id = R.string.day_row_breakfast_title),
+            style = MaterialTheme.typography.subtitle2,
+        )
+        Text(
+            text = stringResource(id = R.string.day_row_lunch_title),
+            style = MaterialTheme.typography.subtitle2,
+        )
+        Text(
+            text = stringResource(id = R.string.day_row_dunner_title),
+            style = MaterialTheme.typography.subtitle2,
         )
     }
 }
