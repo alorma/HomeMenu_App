@@ -4,8 +4,7 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -14,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.alorma.homemenu.R
+import com.alorma.homemenu.main.DateViewModel
 import com.alorma.homemenu.main.Day
 import com.alorma.homemenu.ui.HomeMenuTheme
 import java.time.LocalDate
@@ -32,7 +32,7 @@ fun daysList(
 @Composable
 private fun dayListSpace(
     index: Int,
-    days: List<Day>
+    days: List<Day>,
 ) {
     if (index < days.size - 1) {
         Spacer(modifier = Modifier.preferredHeight(4.dp))
@@ -47,7 +47,7 @@ private fun dayListSpace(
 @Composable
 fun dayRow(
     day: Day,
-    onDayClick: (Day) -> Unit
+    onDayClick: (Day) -> Unit,
 ) {
     val shape = MaterialTheme.shapes.medium
     val backgroundColor = if (day.isToday) {
@@ -55,15 +55,43 @@ fun dayRow(
     } else {
         MaterialTheme.colors.background
     }
+    Row {
+        daysNumbers(day)
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .clip(shape)
+                .background(color = backgroundColor)
+                .clickable(onClick = { onDayClick(day) })
+                .padding(8.dp),
+        ) {
+            dayTitle(day)
+            dayContent()
+        }
+    }
+}
+
+@Composable
+fun daysNumbers(day: Day) {
     Column(
-        modifier = Modifier.fillMaxWidth()
-            .clip(shape)
-            .background(color = backgroundColor)
-            .clickable(onClick = { onDayClick(day) })
-            .padding(8.dp),
+        modifier = Modifier.padding(8.dp)
     ) {
-        dayTitle(day)
-        dayContent()
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Text(
+                text = day.dateText.day,
+                style = MaterialTheme.typography.caption,
+                color = MaterialTheme.colors.primary.copy(alpha = 0.6f)
+            )
+            Text(
+                text = day.dateText.month,
+                style = MaterialTheme.typography.caption,
+                color = MaterialTheme.colors.primary.copy(alpha = 0.4f)
+            )
+            Text(
+                text = day.dateText.year,
+                style = MaterialTheme.typography.caption,
+                color = MaterialTheme.colors.primary.copy(alpha = 0.4f)
+            )
+        }
     }
 }
 
@@ -111,7 +139,17 @@ private fun dayContent() {
 @Composable
 fun dayRowPreview() {
     HomeMenuTheme {
-        val day = Day("Lunes", LocalDate.now())
+        val date = LocalDate.now()
+        val dateViewModel = DateViewModel(
+            day = date.dayOfMonth.toString(),
+            month = date.month.value.toString(),
+            year = date.year.toString(),
+        )
+        val day = Day(
+            name = "Lunes",
+            date = date,
+            dateText = dateViewModel
+        )
         Column {
             daysList(
                 days = listOf(

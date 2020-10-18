@@ -23,10 +23,26 @@ class MainViewModel(private val clock: Clock) : ViewModel() {
     init {
         viewModelScope.launch {
             val today = clock.getToday()
-            val day = Day(getDayName(today), today, true)
-            daysList.add(day)
-            updateState()
+            onNewDay(today)
         }
+    }
+
+    private suspend fun onNewDay(newDay: LocalDate) {
+        val today = clock.getToday()
+        val dateViewModel = DateViewModel(
+            day = newDay.dayOfMonth.toString(),
+            month = newDay.month.value.toString(),
+            year = newDay.year.toString(),
+        )
+
+        val day = Day(
+            name = getDayName(date = newDay),
+            date = newDay,
+            dateText = dateViewModel,
+            isToday = newDay == today
+        )
+        daysList.add(day)
+        updateState()
     }
 
     private fun updateState() {
@@ -43,7 +59,8 @@ class MainViewModel(private val clock: Clock) : ViewModel() {
     }
 
     fun onDayClicked(day: Day) {
-
+        daysList.remove(day)
+        updateState()
     }
 
     fun onAddNewDay() = viewModelScope.launch {
@@ -54,8 +71,6 @@ class MainViewModel(private val clock: Clock) : ViewModel() {
             random > 0 -> today.plusDays(random.absoluteValue)
             else -> today
         }
-        val day = Day(getDayName(date), date, date == today)
-        daysList.add(day)
-        updateState()
+        onNewDay(date)
     }
 }
