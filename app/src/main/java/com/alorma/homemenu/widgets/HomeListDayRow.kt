@@ -1,6 +1,5 @@
 package com.alorma.homemenu.widgets
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -13,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -24,13 +24,14 @@ fun dayRow(day: Day) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(8.dp),
     ) {
+        val shape = MaterialTheme.shapes.medium.copy(
+            topLeft = CornerSize(0.dp),
+            topRight = CornerSize(0.dp),
+        )
         Card(
-            shape = MaterialTheme.shapes.medium.copy(
-                topLeft = CornerSize(0.dp),
-                topRight = CornerSize(0.dp),
-            ),
+            shape = shape,
             elevation = 4.dp,
-            modifier = Modifier.clickable(onClick = {}),
+            modifier = Modifier.clip(shape).clickable(onClick = {}),
         ) {
             Column {
                 dayTitle(day)
