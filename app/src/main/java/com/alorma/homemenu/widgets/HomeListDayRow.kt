@@ -1,16 +1,13 @@
 package com.alorma.homemenu.widgets
 
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,13 +25,13 @@ fun daysList(
     days: List<Day>,
     onDayClick: (Day) -> Unit,
 ) {
-        LazyColumnFor(
-            items = days,
-            contentPadding = PaddingValues(all = 8.dp),
-        ) { item ->
-            dayRow(day = item, onDayClick = onDayClick)
-            dayListSpace()
-        }
+    LazyColumnFor(
+        items = days,
+        contentPadding = PaddingValues(all = 8.dp),
+    ) { item ->
+        dayRow(day = item, onDayClick = onDayClick)
+        dayListSpace()
+    }
 }
 
 @Composable
@@ -55,14 +52,9 @@ fun dayRow(
     val shape = MaterialTheme.shapes.medium
 
     val backgroundColor = if (day.isToday) {
-        MaterialTheme.colors.primary
+        MaterialTheme.colors.primary.copy(alpha = 0.16f)
     } else {
         MaterialTheme.colors.surface
-    }
-    val titleColor = if (day.isToday) {
-        MaterialTheme.colors.onPrimary
-    } else {
-        MaterialTheme.colors.onSurface
     }
 
     Row {
@@ -78,7 +70,7 @@ fun dayRow(
                     .clickable(onClick = { onDayClick(day) })
                     .padding(8.dp)
             ) {
-                dayTitle(day, titleColor)
+                dayTitle(day)
                 dayContent()
             }
         }
@@ -111,10 +103,7 @@ fun daysNumbers(day: Day) {
 }
 
 @Composable
-private fun dayTitle(
-    day: Day,
-    titleColor: Color,
-) {
+private fun dayTitle(day: Day) {
     val dayName = if (day.isToday) {
         "Today"
     } else {
@@ -124,13 +113,20 @@ private fun dayTitle(
         text = dayName,
         textAlign = TextAlign.Start,
         style = MaterialTheme.typography.h6,
-        color = titleColor
+        color = MaterialTheme.colors.onSurface
     )
 }
 
 @Composable
 private fun dayContent() {
-    Column {
+    Column(
+        modifier = Modifier.padding(
+            padding = PaddingValues(
+                top = 8.dp,
+                bottom = 8.dp,
+            )
+        )
+    ) {
         Text(
             text = stringResource(id = R.string.day_row_breakfast_title),
             style = MaterialTheme.typography.subtitle2,
