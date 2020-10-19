@@ -5,13 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.material.AmbientEmphasisLevels
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,13 +28,13 @@ fun daysList(
     days: List<Day>,
     onDayClick: (Day) -> Unit,
 ) {
-    LazyColumnFor(
-        items = days,
-        contentPadding = PaddingValues(all = 8.dp),
-    ) { item ->
-        dayRow(day = item, onDayClick = onDayClick)
-        dayListSpace()
-    }
+        LazyColumnFor(
+            items = days,
+            contentPadding = PaddingValues(all = 8.dp),
+        ) { item ->
+            dayRow(day = item, onDayClick = onDayClick)
+            dayListSpace()
+        }
 }
 
 @Composable
@@ -54,22 +53,34 @@ fun dayRow(
     onDayClick: (Day) -> Unit,
 ) {
     val shape = MaterialTheme.shapes.medium
+
     val backgroundColor = if (day.isToday) {
-        MaterialTheme.colors.primary.copy(alpha = 0.08f)
+        MaterialTheme.colors.primary
     } else {
-        MaterialTheme.colors.background
+        MaterialTheme.colors.surface
     }
+    val titleColor = if (day.isToday) {
+        MaterialTheme.colors.onPrimary
+    } else {
+        MaterialTheme.colors.onSurface
+    }
+
     Row {
         daysNumbers(day)
-        Column(
+        Surface(
+            color = backgroundColor,
+            shape = shape,
             modifier = Modifier.fillMaxWidth()
-                .clip(shape)
-                .background(color = backgroundColor)
-                .clickable(onClick = { onDayClick(day) })
-                .padding(8.dp),
         ) {
-            dayTitle(day)
-            dayContent()
+            Column(
+                modifier = Modifier
+                    .clip(shape)
+                    .clickable(onClick = { onDayClick(day) })
+                    .padding(8.dp)
+            ) {
+                dayTitle(day, titleColor)
+                dayContent()
+            }
         }
     }
 }
@@ -83,30 +94,26 @@ fun daysNumbers(day: Day) {
             Text(
                 text = day.dateText.day,
                 style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.primary.copy(alpha = 0.6f)
+                color = MaterialTheme.colors.primary.copy(alpha = 0.9f)
             )
             Text(
                 text = day.dateText.month,
                 style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.primary.copy(alpha = 0.4f)
+                color = MaterialTheme.colors.primary.copy(alpha = 0.6f)
             )
             Text(
                 text = day.dateText.year,
                 style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.primary.copy(alpha = 0.4f)
+                color = MaterialTheme.colors.primary.copy(alpha = 0.6f)
             )
         }
     }
 }
 
 @Composable
-private fun dayTitle(day: Day) {
-    dayRowText(day)
-}
-
-@Composable
-private fun dayRowText(
+private fun dayTitle(
     day: Day,
+    titleColor: Color,
 ) {
     val dayName = if (day.isToday) {
         "Today"
@@ -117,7 +124,7 @@ private fun dayRowText(
         text = dayName,
         textAlign = TextAlign.Start,
         style = MaterialTheme.typography.h6,
-        color = MaterialTheme.colors.primary
+        color = titleColor
     )
 }
 

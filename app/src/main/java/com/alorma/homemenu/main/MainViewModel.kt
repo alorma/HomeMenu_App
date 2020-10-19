@@ -23,6 +23,8 @@ open class MainViewModel(private val clock: Clock) : ViewModel() {
         viewModelScope.launch {
             val today = clock.getToday()
             onNewDay(today)
+            val tomorrow = today.plusDays(1)
+            onNewDay(tomorrow)
         }
     }
 
