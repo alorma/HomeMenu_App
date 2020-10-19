@@ -2,6 +2,7 @@ package com.alorma.homemenu
 
 import android.app.Application
 import com.alorma.homemenu.di.DatesModule
+import com.alorma.homemenu.di.OthersModule
 import com.alorma.homemenu.di.ViewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
@@ -13,6 +14,7 @@ class MenuApplication : Application() {
             androidContext(this@MenuApplication)
 
             modules(
+                OthersModule(),
                 DatesModule(),
                 ViewModelModule()
             )

@@ -2,6 +2,7 @@ package com.alorma.homemenu.widgets
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +30,7 @@ fun shapeBodyContent(
     )
 
     Surface(
+        elevation = 4.dp,
         modifier = Modifier
             .clip(shape = bodyShape)
             .fillMaxSize()

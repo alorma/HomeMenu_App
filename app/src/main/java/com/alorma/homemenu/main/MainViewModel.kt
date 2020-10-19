@@ -1,7 +1,10 @@
 package com.alorma.homemenu.main
 
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alorma.homemenu.R
+import com.alorma.homemenu.base.StringsProvider
 import com.alorma.homemenu.time.Clock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +16,10 @@ import java.util.*
 import kotlin.math.absoluteValue
 
 @ExperimentalCoroutinesApi
-open class MainViewModel(private val clock: Clock) : ViewModel() {
+open class MainViewModel(
+    private val clock: Clock,
+    private val stringsProvider: StringsProvider
+) : ViewModel() {
 
     private val mutateFlow: MutableStateFlow<List<Day>> = MutableStateFlow(emptyList())
 
@@ -38,11 +44,29 @@ open class MainViewModel(private val clock: Clock) : ViewModel() {
             year = newDay.year.toString(),
         )
 
+        val dishes = listOf(
+            Dish("Mac & Cheese"),
+            Dish("Heura"),
+            Dish("Yogurt")
+        )
+
+        val meals = listOf(
+            R.string.day_row_breakfast_title,
+            R.string.day_row_lunch_title,
+            R.string.day_row_dunner_title,
+        ).map { name ->
+            Meal(
+                name = stringsProvider.getString(name),
+                dishes = dishes
+            )
+        }
+
         val day = Day(
             name = getDayName(date = newDay),
             date = newDay,
             dateText = dateViewModel,
-            isToday = newDay == today
+            isToday = newDay == today,
+            meals = meals
         )
         daysList.add(day)
         updateState()

@@ -3,14 +3,17 @@ package com.alorma.homemenu
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import com.alorma.homemenu.base.StringsProvider
 import com.alorma.homemenu.main.Day
 import com.alorma.homemenu.main.MainViewModel
 import com.alorma.homemenu.time.Clock
@@ -51,7 +54,7 @@ fun HomeScreen(mainViewModel: MainViewModel) {
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 text = { Text("Add") },
-                shape = RoundedCornerShape(percent = 50),
+                shape = MaterialTheme.shapes.small.copy(all = CornerSize(8.dp)),
                 onClick = { mainViewModel.onAddNewDay() },
             )
         },
@@ -89,7 +92,8 @@ fun DefaultPreview() {
         object : Clock {
             override suspend fun getToday(): LocalDate = LocalDate.now()
             override suspend fun now(): Long = System.currentTimeMillis()
-        }
+        },
+        StringsProvider(ContextAmbient.current)
     )
     HomeMenuTheme {
         HomeScreen(viewModel)
