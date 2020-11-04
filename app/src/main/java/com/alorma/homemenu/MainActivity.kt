@@ -3,11 +3,15 @@ package com.alorma.homemenu
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
@@ -78,7 +82,12 @@ private fun homeComponent(
     val items = mainViewModel.days().collectAsState().value
 
     if (items.isEmpty()) {
-        Text("No items")
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            alignment = Alignment.Center
+        ) {
+            Text("No items")
+        }
     } else {
         daysList(days = items, onDayClick = onDayClick)
     }
