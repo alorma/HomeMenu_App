@@ -36,8 +36,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HomeMenuTheme {
-                HomeScreen(mainViewModel.days()) {
-
+                HomeScreen(mainViewModel.days()) { day ->
+                    mainViewModel.onDayClicked(day)
                 }
             }
         }
