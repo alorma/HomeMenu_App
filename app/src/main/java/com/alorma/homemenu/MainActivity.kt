@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                     composable(route = "create_day") {
-                        CreateDayScreen()
+                        CreateDayScreen(navController = navController)
                     }
                 }
             }
