@@ -1,6 +1,5 @@
 package com.alorma.homemenu.main
 
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alorma.homemenu.R
@@ -13,12 +12,11 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.*
-import kotlin.math.absoluteValue
 
 @ExperimentalCoroutinesApi
-open class MainViewModel(
+class MainViewModel(
     private val clock: Clock,
-    private val stringsProvider: StringsProvider
+    private val stringsProvider: StringsProvider,
 ) : ViewModel() {
 
     private val mutateFlow: MutableStateFlow<List<Day>> = MutableStateFlow(emptyList())
@@ -34,7 +32,7 @@ open class MainViewModel(
         }
     }
 
-    open fun days(): StateFlow<List<Day>> = mutateFlow
+    fun days(): StateFlow<List<Day>> = mutateFlow
 
     private suspend fun onNewDay(newDay: LocalDate) {
         val today = clock.getToday()
@@ -88,16 +86,5 @@ open class MainViewModel(
     fun onDayClicked(day: Day) {
         daysList.remove(day)
         updateState()
-    }
-
-    fun onAddNewDay() = viewModelScope.launch {
-        val today = clock.getToday()
-        val random = (-6..6).random().toLong()
-        val date = when {
-            random < 0 -> today.minusDays(random.absoluteValue)
-            random > 0 -> today.plusDays(random.absoluteValue)
-            else -> today
-        }
-        onNewDay(date)
     }
 }

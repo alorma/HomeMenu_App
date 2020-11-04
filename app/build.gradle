@@ -66,6 +66,9 @@ dependencies {
     implementation "org.koin:koin-androidx-compose:$koin_version"
     implementation "org.koin:koin-androidx-ext:$koin_version"
 
+    def nav_compose_version = "1.0.0-alpha01"
+    implementation "androidx.navigation:navigation-compose:$nav_compose_version"
+
     implementation 'com.github.alorma.Compose-Debug-Drawer:drawer-base:0.1.0-beta-04'
     implementation 'com.github.alorma.Compose-Debug-Drawer:drawer-modules:0.1.0-beta-04'
     implementation 'com.github.alorma.Compose-Debug-Drawer:developer-shortcuts:0.1.0-beta-04'
