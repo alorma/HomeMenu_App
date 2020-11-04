@@ -1,6 +1,10 @@
 package com.alorma.homemenu.widgets
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.material.Icon
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.lazy.LazyRowForIndexed
@@ -139,14 +143,15 @@ private fun dayTitle(
             color = MaterialTheme.colors.onSurface
         )
         Spacer(modifier = Modifier.weight(1f))
+
         Icon(
+            asset = vectorResource(id = R.drawable.ic_edit),
+            tint = MaterialTheme.colors.onSurface,
             modifier = Modifier
                 .preferredSize(32.dp)
                 .clip(MaterialTheme.shapes.small)
                 .clickable(onClick = { onDayClick(day) })
                 .padding(8.dp),
-            asset = vectorResource(id = R.drawable.ic_edit),
-            tint = MaterialTheme.colors.onSurface
         )
     }
 }
@@ -179,21 +184,20 @@ private fun mealContent(meal: Meal) {
             style = MaterialTheme.typography.subtitle2,
             color = MaterialTheme.colors.primary.copy(alpha = 0.8f)
         )
-        dishesContent(meal, AmbientEmphasisLevels)
+        dishesContent(meal)
     }
 }
 
 @Composable
 private fun dishesContent(
     meal: Meal,
-    AmbientEmphasisLevels: Ambient<EmphasisLevels>,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Spacer(modifier = Modifier.preferredHeight(8.dp))
         meal.dishes.forEach { dish ->
-            dishContent(AmbientEmphasisLevels, dish)
+            dishContent(dish)
             Spacer(modifier = Modifier.preferredHeight(2.dp))
         }
     }
@@ -201,7 +205,6 @@ private fun dishesContent(
 
 @Composable
 private fun dishContent(
-    AmbientEmphasisLevels: Ambient<EmphasisLevels>,
     dish: Dish,
 ) {
     ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
