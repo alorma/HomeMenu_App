@@ -36,7 +36,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HomeMenuTheme {
-                HomeScreen()
+                HomeScreen(mainViewModel.days()) {
+
+                }
             }
         }
     }
@@ -45,7 +47,10 @@ class MainActivity : AppCompatActivity() {
 @ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    data: StateFlow<List<Day>>,
+    onDayClick: (Day) -> Unit,
+) {
     val bodyShape: Shape = MaterialTheme.shapes.large.copy(
         topLeft = CornerSize(16.dp),
         topRight = CornerSize(0.dp),
@@ -58,6 +63,7 @@ fun HomeScreen() {
         appBar = {
             val title = stringResource(id = R.string.app_name)
             TopAppBar(
+                elevation = 0.dp,
                 navigationIcon = { navigationIcon(backDropState) },
                 title = { Text(text = title) }
             )
@@ -73,7 +79,7 @@ fun HomeScreen() {
         },
         frontLayerShape = bodyShape,
     ) {
-        homeComponent(data = MutableStateFlow(emptyList()), onDayClick = {})
+        homeComponent(data = data, onDayClick = onDayClick)
     }
 }
 
@@ -122,6 +128,8 @@ private fun homeComponent(
 @Composable
 fun DefaultPreview() {
     HomeMenuTheme {
-        HomeScreen()
+        HomeScreen(data = MutableStateFlow(emptyList())) {
+
+        }
     }
 }
