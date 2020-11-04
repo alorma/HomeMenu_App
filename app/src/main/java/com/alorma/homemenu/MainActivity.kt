@@ -36,9 +36,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HomeMenuTheme {
-                HomeScreen(mainViewModel.days()) { day ->
-                    mainViewModel.onDayClicked(day)
-                }
+                HomeScreen(
+                    data = mainViewModel.days(),
+                    onDayClick = { day ->
+                        mainViewModel.onDayClicked(day)
+                    },
+                    onAddDay = { mainViewModel.onAddNewDay() }
+                )
             }
         }
     }
@@ -50,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 fun HomeScreen(
     data: StateFlow<List<Day>>,
     onDayClick: (Day) -> Unit,
+    onAddDay: () -> Unit,
 ) {
     val bodyShape: Shape = MaterialTheme.shapes.large.copy(
         topLeft = CornerSize(16.dp),
@@ -65,21 +70,31 @@ fun HomeScreen(
             TopAppBar(
                 elevation = 0.dp,
                 navigationIcon = { navigationIcon(backDropState) },
-                title = { Text(text = title) }
+                title = { Text(text = title) },
+                actions = {
+                    IconButton(onClick = onAddDay) {
+                        Icon(asset = vectorResource(id = R.drawable.ic_add))
+                    }
+                }
             )
         },
         backLayerBackgroundColor = MaterialTheme.colors.primarySurface,
         backLayerContent = {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                alignment = Alignment.Center
-            ) {
-                Text("back layer")
-            }
+            backLayer()
         },
         frontLayerShape = bodyShape,
     ) {
         homeComponent(data = data, onDayClick = onDayClick)
+    }
+}
+
+@Composable
+private fun backLayer() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        alignment = Alignment.Center
+    ) {
+        Text("back layer")
     }
 }
 
@@ -102,6 +117,7 @@ private fun navigationIcon(backDropState: BackdropScaffoldState) {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 private fun homeComponent(
@@ -128,8 +144,10 @@ private fun homeComponent(
 @Composable
 fun DefaultPreview() {
     HomeMenuTheme {
-        HomeScreen(data = MutableStateFlow(emptyList())) {
-
-        }
+        HomeScreen(
+            data = MutableStateFlow(emptyList()),
+            onAddDay = {},
+            onDayClick = {},
+        )
     }
 }
